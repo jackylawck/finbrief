@@ -1,82 +1,81 @@
-## 🇭🇰 中文版
+# 📊 FinBrief · 財略摘要器 (Financial Digest)
 
-### 痛點
-財務團隊每日耗費大量時間從損益表、現金流量表中提煉重點，卻仍需花 70% 時間將數字「翻譯」成管理層可讀的決策建議。
-
-**FinBrief** 讓你上傳 Excel 數據、選定分析模板，AI 自動計算關鍵指標並以自然語言生成簡報。
-
-### 核心功能
-- 數據上傳 — 支援 Excel 及 CSV，即時預覽
-- 指標計算 — 收入增長率、成本佔比、現金流健康度
-- AI 報告生成 — 根據模板以自然語言填充洞察
-- 一鍵匯出 — 可複製或下載完整簡報
-- 數據安全 — 不上傳伺服器，即時處理
-
-### 快速開始（本地）
-\`\`\`bash
-git clone https://github.com/你的用戶名/你的倉庫名.git
-cd 你的倉庫名
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-\`\`\`
-
-建立金鑰檔案 `.streamlit/secrets.toml`：
-\`\`\`
-OPENAI_API_KEY = "你的金鑰"
-\`\`\`
-
-執行：
-\`\`\`bash
-streamlit run app.py
-\`\`\`
-
-### 部署（免費）
-1. Push 到 GitHub 公開倉庫
-2. 到 share.streamlit.io 點擊 New app
-3. Advanced settings 加入 OPENAI_API_KEY
-4. 點擊 Deploy，2-3 分鐘獲得網址
-
-### 技術棧
-- 前端：Streamlit
-- AI：OpenAI / DeepSeek API
-- 數據：Pandas
-- 部署：Streamlit Cloud
-
-### 使用流程
-1. 上傳季度財務 Excel/CSV
-2. 貼上你的分析模板
-3. AI 計算指標並生成報告
-4. 獲取文字洞察簡報
-## 🇬🇧 English (Simplified)
-
-### Problem
-Finance teams spend 70% of their time translating numbers into readable briefs.
-
-**FinBrief** automates this: upload data, choose a template, get AI-generated insights.
-
-### Key Features
-- Upload Excel/CSV with preview
-- Auto-calculate revenue growth, cost ratio, cash flow health
-- AI fills your template with natural language
-- One-click export
-
-### Quick Start
-\`\`\`bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-pip install -r requirements.txt
-streamlit run app.py
-\`\`\`
-
-### Deploy
-Push to GitHub → share.streamlit.io → New app → Add API key → Deploy
-
-### Tech Stack
-Streamlit + OpenAI/DeepSeek + Pandas
+[English](#english-version) | [繁體中文](#繁體中文版)
 
 ---
 
-## 📄 License
-MIT License © 2026 
+## 繁體中文版
 
+**FinBrief** 是一款專為 C-Level 管理層、董事會 (Board of Directors) 及投資分析師設計的 AI 驅動財務戰略摘要與風險排雷系統。
+
+系統能自動將複雜的年報、損益表 (P&L) 及現金流量表 (PDF/Excel/CSV) 轉換為符合 **香港財務報告準則 (HKFRS)** 與 **國際財務報告準則 (IFRS)** 的高階管理決策備忘錄，並完全融入 **ISO 27001 資安控管** 與 **ISO 42001 AI 治理規範 (AIMS)**。
+
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![ISO 42001](https://img.shields.io/badge/ISO_42001-AI_Governance-blue?style=for-the-badge)
+![ISO 27001](https://img.shields.io/badge/ISO_27001-Data_Security-green?style=for-the-badge)
+
+---
+
+### 🌟 核心亮點
+
+* 🆓 **零門檻免 Key 體驗 + 🔑 BYOK 彈性**：預設採用公開免 Key 開源大模型，無須輸入 API Key 即可開箱即用；同時支援切換至 **BYOK (Bring Your Own Key)** 模式，接駁 OpenAI (GPT-4o)、DeepSeek 或 Groq 商業級模型。
+* 🧠 **模組化雙語知識庫 (Modular Knowledge Base)**：系統自動載入 `knowledge_base/` 資料夾下的 Markdown 模組，融合 **HKFRS 會計合規**、**CFO 資本配置**、**第三方 AI 部署治理 (Microsoft 365 Copilot)** 及 **普通法合規與變革管理**。
+* 🔒 **ISO 27001 資訊安全與資料最小化**：上傳數據僅於記憶體 (In-Memory) 中進行即時解析，伺服器硬碟絕不儲存任何原始財報檔案。
+* 🛡️ **ISO 42001 AI 治理可追溯性 (Audit Trail)**：生成之報告末端自動附加治理元數據，紀錄時間戳記、運作模式、知識庫模組版本與模型標識。
+* 🌐 **全自動中英雙語對齊 (Full i18n)**：介面、一鍵分析模板及 Prompt 完整支援繁體中文與英文。
+
+---
+
+### 📂 專案結構
+
+```text
+finbrief/
+├── app.py                      # Streamlit 主程式 (整合 ISO 控制項與雙模式 LLM)
+├── requirements.txt            # 套件依賴清單
+├── README.md                   # 專案說明文件 (中英雙語)
+└── knowledge_base/             # 模組化知識庫資料夾
+    ├── hkfrs_standards.md      # 基礎底盤：HKFRS/IFRS 會計準則與三大報表拆解
+    ├── cfo_strategic_mindset.md# 戰略視野：CFO 資本配置、ROE/ROIC 與併購盡職調查
+    └── ai_governance_and_risk.md# 治理與防禦：第三方 AI 部署風險、合規與變革管理
+
+```
+
+🚀 快速開始
+複製專案庫 (Clone Repository)
+
+Bash
+git clone [https://github.com/jackylawck/finbrief.git](https://github.com/jackylawck/finbrief.git)
+cd finbrief
+安裝依賴套件 (Install Dependencies)
+
+Bash
+pip install -r requirements.txt
+啟動應用程式 (Run App)
+
+Bash
+streamlit run app.py
+English Version
+FinBrief is an enterprise-grade AI-powered strategic financial digest and risk auditing tool tailored for C-Suite executives, Boards of Directors, and investment analysts.
+
+FinBrief transforms complex annual reports, income statements, and cash flow data (PDF/Excel/CSV) into actionable strategic management briefs aligned with HKFRS and IFRS standards, fully incorporating ISO 27001 Information Security and ISO 42001 AI Management System (AIMS) compliance controls.
+
+🌟 Key Features
+🆓 Zero-Barrier Free Mode + 🔑 BYOK Flexibility: Default Free Mode operates on public no-key LLM proxies for immediate evaluation. Advanced users can switch to BYOK (Bring Your Own Key) mode to connect commercial endpoints (OpenAI GPT-4o, DeepSeek, or Groq).
+
+🧠 Modular Bilingual Knowledge Base: Automatically scans and injects domain knowledge from knowledge_base/ modules covering HKFRS Accounting, CFO Capital Allocation, Third-Party AI Deployment Governance (e.g., M365 Copilot), and Legal/Change Management Risks.
+
+🔒 ISO 27001 Data Minimization: All uploaded financial documents are processed strictly in memory and are never written to server disks.
+
+🛡️ ISO 42001 AI Governance & Traceability: Automatically appends an AI Governance Audit Trail at the footer of every report, capturing timestamps, system prompts, knowledge base module versions, and model identifiers.
+
+🌐 Full Bilingual Support (i18n): Seamlessly switch UI, preset analysis templates, and system prompts between Traditional Chinese and English.
+
+📜 Disclaimer & Compliance Notice
+Data Minimization (ISO 27001): Uploaded financial documents are processed solely in memory for real-time analysis and are never stored on server storage.
+
+AI Governance (ISO 42001): All generated reports include audit footprints for full traceability.
+
+Disclaimer: Reports generated by FinBrief are for strategic decision reference only and do not constitute formal accounting, audit, legal, or investment advice.
+
+Created by Jacky Law | HKFRS & ISO 42001 Aligned AI Governance Project

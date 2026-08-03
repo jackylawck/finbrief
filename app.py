@@ -3,6 +3,7 @@ import pandas as pd
 from pypdf import PdfReader
 from openai import OpenAI
 import requests
+import urllib.parse
 
 # --- 1. UI 國際化語言包與預設模板 (i18n & Presets) ---
 TRANSLATIONS = {
@@ -111,30 +112,44 @@ with st.sidebar:
     st.markdown(f"### {t['security_title']}")
     st.caption(t["privacy_policy"])
 
-# --- 3. 完全免 Key 的公開免認證 LLM 函數 ---
+# --- 3. 免 Key LLM 呼叫函數 (帶智慧截斷與雙重備援) ---
 def call_free_open_llm(system_prompt, user_prompt):
     """
-    完全免 API Key、免認證的公開大模型 Endpoint
+    帶有自動備援機制的免費 LLM 呼叫，避免長文字導致 402/413 錯誤
     """
-    url = "https://text.pollinations.ai/"
-    
-    payload = {
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "model": "openai",
-        "seed": 42
-    }
-    
+    # 方案 A: Pollinations GET 方式 (控制在 8,000 字以內)
     try:
-        response = requests.post(url, json=payload, timeout=60)
-        if response.status_code == 200:
+        truncated_prompt = user_prompt[:8000]
+        prompt_text = f"System: {system_prompt}\nUser: {truncated_prompt}"
+        encoded_prompt = urllib.parse.quote(prompt_text)
+        
+        url = f"https://text.pollinations.ai/{encoded_prompt}?model=openai"
+        response = requests.get(url, timeout=45)
+        
+        if response.status_code == 200 and len(response.text.strip()) > 0:
             return response.text
-        else:
-            raise Exception(f"Free LLM Endpoint Busy ({response.status_code}). Please try again in a moment.")
-    except Exception as e:
-        raise Exception(f"Free LLM Connection Error: {str(e)}")
+    except Exception:
+        pass # 若方案 A 失敗，自動無感切換至方案 B
+
+    # 方案 B: Pollinations POST 方式 (控制在 6,000 字以內)
+    try:
+        url_b = "https://text.pollinations.ai/"
+        payload_b = {
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt[:6000]}
+            ],
+            "model": "qwen",
+            "code": "beartoken"
+        }
+        res_b = requests.post(url_b, json=payload_b, timeout=45)
+        if res_b.status_code == 200 and len(res_b.text.strip()) > 0:
+            return res_b.text
+    except Exception:
+        pass
+
+    # 若兩者均繁忙，彈性提示
+    raise Exception("免費 LLM Endpoint 目前流量較高。建議稍後再試，或切換至「🔑 BYOK 模式」獲得商業級穩定體驗。")
 
 # --- 4. 主畫面 UI 與一鍵模板選單 ---
 st.title(t["title"])
@@ -152,8 +167,8 @@ template = st.text_area(t["template_label"], value=default_template_text, height
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     extracted_text = ""
-    # 擷取前 30 頁關鍵內容，防止過大超時
-    max_pages = min(len(pdf_reader.pages), 30)
+    # 免 Key 模式下只精確擷取前 15 頁核心摘要與目錄，確保免費 Endpoint 穩定吞吐
+    max_pages = min(len(pdf_reader.pages), 15)
     for i in range(max_pages):
         text = pdf_reader.pages[i].extract_text()
         if text:
@@ -186,7 +201,7 @@ if st.button(t["btn_generate"]):
                 {template}
 
                 【Financial Data / 財務數據】:
-                {extracted_content[:40000]}
+                {extracted_content}
                 """
 
                 if run_mode == t["mode_free"]:
@@ -200,7 +215,7 @@ if st.button(t["btn_generate"]):
                         model=selected_model,
                         messages=[
                             {"role": "system", "content": t["system_prompt"]},
-                            {"role": "user", "content": user_prompt}
+                            {"role": "user", "content": user_prompt[:40000]} # BYOK 模式可支援更大字數
                         ],
                         temperature=0.2
                     )

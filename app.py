@@ -5,6 +5,7 @@ from openai import OpenAI
 import requests
 import urllib.parse
 import os
+import glob
 
 # --- 1. UI 國際化語言包與預設模板 (i18n & Presets) ---
 TRANSLATIONS = {
@@ -39,7 +40,7 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ 請選擇或輸入分析模板！",
         "report_header": "📈 FinBrief 財略分析報告",
         "btn_download": "📥 下載報告 (Markdown 格式)",
-        "system_prompt": "你是一位精通香港會計準則 (HKFRS) 與國際財務報告準則 (IFRS) 的資深 C-Level 財務顧問與投資分析師。請參考提供的 HKFRS/IFRS 雙語權威知識庫，嚴格以專業繁體中文輸出高品質財略報告。"
+        "system_prompt": "你是一位精通香港會計準則 (HKFRS)、國際財務報告準則 (IFRS) 及企業戰略治理的資深 C-Level 財務顧問與投資分析師。請參考提供的多模組雙語權威知識庫，嚴格以專業繁體中文輸出高品質財略報告。"
     },
     "en": {
         "page_title": "FinBrief · Financial Digest",
@@ -72,7 +73,7 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ Please select or input an analysis template!",
         "report_header": "📈 FinBrief Strategic Financial Report",
         "btn_download": "📥 Download Report (Markdown)",
-        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS and IFRS. Please refer to the provided bilingual HKFRS/IFRS Knowledge Base and output a professional, high-level financial strategic report strictly in English."
+        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS, IFRS, and corporate strategic governance. Please refer to the provided multi-module bilingual Knowledge Base and output a professional, high-level financial strategic report strictly in English."
     }
 }
 
@@ -113,15 +114,27 @@ with st.sidebar:
     st.markdown(f"### {t['security_title']}")
     st.caption(t["privacy_policy"])
 
-# --- 3. 讀取單一中英雙語權威知識庫 (Knowledge Base) ---
+# --- 3. 動態讀取模組化知識庫 (Knowledge Base Loader) ---
 @st.cache_data
 def load_knowledge_base():
-    """讀取單一中英雙語 HKFRS/IFRS 權威知識庫"""
-    file_path = "knowledge_base/hkfrs_standards.md"
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            kb_content = f.read()
-            return f"\n\n【HKFRS/IFRS Bilingual Domain Knowledge / 雙語權威財務知識庫】\n{kb_content}"
+    """自動掃描並載入 knowledge_base 資料夾下所有的 .md 模組"""
+    kb_dir = "knowledge_base"
+    combined_kb_content = ""
+    
+    if os.path.exists(kb_dir):
+        # 尋找所有 .md 檔案
+        md_files = glob.glob(os.path.join(kb_dir, "*.md"))
+        for file_path in md_files:
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    filename = os.path.basename(file_path)
+                    combined_kb_content += f"\n\n--- 知識模組: {filename} ---\n"
+                    combined_kb_content += f.read()
+            except Exception:
+                pass
+                
+    if combined_kb_content:
+        return f"\n\n【綜合權威知識庫 / Unified Domain Knowledge Base】\n{combined_kb_content}"
     else:
         return "\n\n【Default Knowledge】: Analyze under standard HKFRS/IFRS framework focusing on liquidity, gross margin shifts, and operating cash flow CAPEX coverage."
 
@@ -178,7 +191,7 @@ template = st.text_area(t["template_label"], value=default_template_text, height
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     extracted_text = ""
-    # 免 Key 模式下只精確擷取前 15 頁核心摘要與目錄，確保免費 Endpoint 吞吐穩定
+    # 免 Key 模式下擷取前 15 頁核心數據，確保免費 Endpoint 吞吐穩定
     max_pages = min(len(pdf_reader.pages), 15)
     for i in range(max_pages):
         text = pdf_reader.pages[i].extract_text()
@@ -205,9 +218,9 @@ if st.button(t["btn_generate"]):
                 df = pd.read_excel(uploaded_file) if file_type == 'xlsx' else pd.read_csv(uploaded_file)
                 extracted_content = df.to_string()
 
-        with st.spinner("AI Analysis in progress / AI 正在結合 HKFRS 雙語知識庫進行分析..."):
+        with st.spinner("AI Analysis in progress / AI 正在載入模組化知識庫並進行分析..."):
             try:
-                # 載入單一中英雙語權威知識庫
+                # 動態載入所有模組化 Markdown 知識庫
                 kb_text = load_knowledge_base()
                 full_system_prompt = t["system_prompt"] + kb_text
 

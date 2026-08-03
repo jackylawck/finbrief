@@ -1,70 +1,49 @@
-📊 FinBrief · 財略摘要器 (Financial Digest)
-English | 繁體中文
+# 📊 FinBrief · 財略摘要器 (Financial Digest)
 
-繁體中文版
-FinBrief 是一款專為 C-Level 管理層、董事會 (Board of Directors) 及投資分析師設計的 AI 驅動財務戰略摘要與風險排雷系統。
+[English](#english-version) | [繁體中文](#繁體中文版)
 
-系統能自動將複雜的年報、損益表 (P&L) 及現金流量表 (PDF/Excel/CSV) 轉換為符合 香港財務報告準則 (HKFRS) 與 國際財務報告準則 (IFRS) 的高階管理決策備忘錄，並完全融入 ISO 27001 資安控管 與 ISO 42001 AI 治理規範 (AIMS)。
+---
 
-🌟 核心亮點
-🆓 零門檻免 Key 體驗 + 🔑 BYOK 彈性：預設採用公開免 Key 開源大模型，無須輸入 API Key 即可開箱即用；同時支援切換至 BYOK (Bring Your Own Key) 模式，接駁 OpenAI (GPT-4o)、DeepSeek 或 Groq 商業級模型。
+<a name="繁體中文版"></a>
+## 繁體中文版
 
-🧠 模組化雙語知識庫 (Modular Knowledge Base)：系統自動載入 knowledge_base/ 資料夾下的 Markdown 模組，融合 HKFRS 會計合規、CFO 資本配置、第三方 AI 部署治理 (Microsoft 365 Copilot) 及 普通法合規與變革管理。
+**FinBrief** 是一款專為 C-Level 管理層、董事會 (Board of Directors) 及投資分析師設計的 AI 驅動財務戰略摘要與風險排雷系統。
 
-🔒 ISO 27001 資訊安全與資料最小化：上傳數據僅於記憶體 (In-Memory) 中進行即時解析，伺服器硬碟絕不儲存任何原始財報檔案。
+系統能自動將複雜的年報、損益表 (P&L) 及現金流量表 (PDF/Excel/CSV) 轉換為符合 **香港財務報告準則 (HKFRS)** 與 **國際財務報告準則 (IFRS)** 的高階管理決策備忘錄，並完全融入 **ISO 27001 資安控管** 與 **ISO 42001 AI 治理規範 (AIMS)**。
 
-🛡️ ISO 42001 AI 治理可追溯性 (Audit Trail)：生成之報告末端自動附加治理元數據，紀錄時間戳記、運作模式、知識庫模組版本與模型標識。
+---
 
-🌐 全自動中英雙語對齊 (Full i18n)：介面、一鍵分析模板及 Prompt 完整支援繁體中文與英文。
+### 🌟 核心亮點
 
-📂 專案結構
-finbrief/
+* 🆓 **零門檻免 Key 體驗 + 🔑 BYOK 彈性**：預設採用公開免 Key 開源大模型，無須輸入 API Key 即可開箱即用；同時支援切換至 **BYOK (Bring Your Own Key)** 模式，接駁 OpenAI (GPT-4o)、DeepSeek 或 Groq 商業級模型。
+* 🧠 **模組化雙語知識庫 (Modular Knowledge Base)**：系統自動載入 `knowledge_base/` 資料夾下的 Markdown 模組，融合 **HKFRS 會計合規**、**CFO 資本配置**、**第三方 AI 部署治理 (Microsoft 365 Copilot)** 及 **普通法合規與變革管理**。
+* 🔒 **ISO 27001 資訊安全與資料最小化**：上傳數據僅於記憶體 (In-Memory) 中進行即時解析，伺服器硬碟絕不儲存任何原始財報檔案。
+* 🛡️ **ISO 42001 AI 治理可追溯性 (Audit Trail)**：生成之報告末端自動附加治理元數據，紀錄時間戳記、運作模式、知識庫模組版本與模型標識。
+* 🌐 **全自動中英雙語對齊 (Full i18n)**：介面、一鍵分析模板及 Prompt 完整支援繁體中文與英文。
 
-├── app.py                      # Streamlit 主程式 (整合 ISO 控制項與雙模式 LLM)
+---
 
-├── requirements.txt            # 套件依賴清單
+<a name="english-version"></a>
+## English Version
 
-├── README.md                   # 專案說明文件 (中英雙語)
+**FinBrief** is an enterprise-grade AI-powered strategic financial digest and risk auditing tool tailored for C-Suite executives, Boards of Directors, and investment analysts.
 
-└── knowledge_base/             # 模組化知識庫資料夾
+FinBrief transforms complex annual reports, income statements, and cash flow data (PDF/Excel/CSV) into actionable strategic management briefs aligned with **HKFRS** and **IFRS** standards, fully incorporating **ISO 27001 Information Security** and **ISO 42001 AI Management System (AIMS)** compliance controls.
 
-├── hkfrs_standards.md      # 基礎底盤：HKFRS/IFRS 會計準則與三大報表拆解
+---
 
-├── cfo_strategic_mindset.md# 戰略視野：CFO 資本配置、ROE/ROIC 與併購盡職調查
+### 🌟 Key Features
 
-└── ai_governance_and_risk.md# 治理與防禦：第三方 AI 部署風險、合規與變革管理
+* 🆓 **Zero-Barrier Free Mode + 🔑 BYOK Flexibility**: Default Free Mode operates on public no-key LLM proxies for immediate evaluation. Advanced users can switch to **BYOK (Bring Your Own Key)** mode to connect commercial endpoints (OpenAI GPT-4o, DeepSeek, or Groq).
+* 🧠 **Modular Bilingual Knowledge Base**: Automatically scans and injects domain knowledge from `knowledge_base/` modules covering **HKFRS Accounting**, **CFO Capital Allocation**, **Third-Party AI Deployment Governance (e.g., M365 Copilot)**, and **Legal/Change Management Risks**.
+* 🔒 **ISO 27001 Data Minimization**: All uploaded financial documents are processed strictly in memory and are never written to server disks.
+* 🛡️ **ISO 42001 AI Governance & Traceability**: Automatically appends an AI Governance Audit Trail at the footer of every report, capturing timestamps, system prompts, knowledge base module versions, and model identifiers.
+* 🌐 **Full Bilingual Support (i18n)**: Seamlessly switch UI, preset analysis templates, and system prompts between Traditional Chinese and English.
 
-🚀 快速開始
-複製專案庫 (Clone Repository)
-git clone https://github.com/jackylawck/finbrief.git
+---
 
-cd finbrief
+### 📜 Disclaimer & Compliance Notice
 
-安裝依賴套件 (Install Dependencies)
-pip install -r requirements.txt
-
-啟動應用程式 (Run App)
-streamlit run app.py
-
-English Version
-FinBrief is an enterprise-grade AI-powered strategic financial digest and risk auditing tool tailored for C-Suite executives, Boards of Directors, and investment analysts.
-
-FinBrief transforms complex annual reports, income statements, and cash flow data (PDF/Excel/CSV) into actionable strategic management briefs aligned with HKFRS and IFRS standards, fully incorporating ISO 27001 Information Security and ISO 42001 AI Management System (AIMS) compliance controls.
-
-🌟 Key Features
-🆓 Zero-Barrier Free Mode + 🔑 BYOK Flexibility: Default Free Mode operates on public no-key LLM proxies for immediate evaluation. Advanced users can switch to BYOK (Bring Your Own Key) mode to connect commercial endpoints (OpenAI GPT-4o, DeepSeek, or Groq).
-
-🧠 Modular Bilingual Knowledge Base: Automatically scans and injects domain knowledge from knowledge_base/ modules covering HKFRS Accounting, CFO Capital Allocation, Third-Party AI Deployment Governance (e.g., M365 Copilot), and Legal/Change Management Risks.
-
-🔒 ISO 27001 Data Minimization: All uploaded financial documents are processed strictly in memory and are never written to server disks.
-
-🛡️ ISO 42001 AI Governance & Traceability: Automatically appends an AI Governance Audit Trail at the footer of every report, capturing timestamps, system prompts, knowledge base module versions, and model identifiers.
-
-🌐 Full Bilingual Support (i18n): Seamlessly switch UI, preset analysis templates, and system prompts between Traditional Chinese and English.
-
-📜 Disclaimer & Compliance Notice
-Data Minimization (ISO 27001): Uploaded financial documents are processed solely in memory for real-time analysis and are never stored on server storage.
-
-AI Governance (ISO 42001): All generated reports include audit footprints for full traceability.
-
-Disclaimer: Reports generated by FinBrief are for strategic decision reference only and do not constitute formal accounting, audit, legal, or investment advice.
+* **Data Minimization (ISO 27001)**: Uploaded financial documents are processed solely in memory for real-time analysis and are never stored on server storage.
+* **AI Governance (ISO 42001)**: All generated reports include audit footprints for full traceability.
+* **Disclaimer**: Reports generated by FinBrief are for strategic decision reference only and do not constitute formal accounting, audit, legal, or investment advice.

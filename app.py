@@ -17,7 +17,7 @@ TRANSLATIONS = {
         "model_select": "選擇 / 輸入模型",
         "api_key_input": "請輸入你的 API Key",
         "security_title": "🔒 數據隱私與技術說明",
-        "tech_note_free": "💡 **免 Key 技術說明**：採用公開開源 LLM 轉接服務，無需金鑰即可一鍵分析。適合快速體驗與公開財報摘要。",
+        "tech_note_free": "💡 **免 Key 技術說明**：採用公開免 Key LLM 服務，無需申請或輸入任何金鑰即可一鍵分析。適合快速體驗與公開財報摘要。",
         "tech_note_byok": "💡 **BYOK 技術說明**：支援 GPT-4o / DeepSeek / Groq 等商業模型。金鑰僅存於當前 Session 記憶體，關閉分頁即銷毀。",
         "privacy_policy": """
         * **數據隱私**：上傳之財務報表數據僅用於當次 AI 摘要計算，伺服器不保存任何原始檔案。
@@ -50,7 +50,7 @@ TRANSLATIONS = {
         "model_select": "Select / Input Model",
         "api_key_input": "Enter your API Key",
         "security_title": "🔒 Privacy & Security Notice",
-        "tech_note_free": "💡 **Free Mode Tech Note**: Powered by public open-source LLM proxies. No API key required. Ideal for quick testing.",
+        "tech_note_free": "💡 **Free Mode Tech Note**: Powered by public no-key LLM services. No registration or API key required. Ideal for quick testing.",
         "tech_note_byok": "💡 **BYOK Tech Note**: Supports commercial models (GPT-4o / DeepSeek / Groq). Keys stored in session memory only.",
         "privacy_policy": """
         * **Data Privacy**: Uploaded documents are processed solely in memory and never stored on disk.
@@ -111,52 +111,48 @@ with st.sidebar:
     st.markdown(f"### {t['security_title']}")
     st.caption(t["privacy_policy"])
 
-# --- 3. 穩定版免 Key LLM 呼叫函數 ---
+# --- 3. 完全免 Key 的公開免認證 LLM 函數 ---
 def call_free_open_llm(system_prompt, user_prompt):
     """
-    使用穩定的免費 Open Router API 進行免 Key 呼叫
+    完全免 API Key、免認證的公開大模型 Endpoint
     """
-    url = "https://openrouter.ai/api/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://finbrief.streamlit.app",
-        "X-Title": "FinBrief"
-    }
+    url = "https://text.pollinations.ai/"
+    
     payload = {
-        "model": "meta-llama/llama-3.2-3b-instruct:free", # 高可用免費模型
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ],
-        "temperature": 0.2
+        "model": "openai",
+        "seed": 42
     }
     
-    response = requests.post(url, headers=headers, json=payload, timeout=45)
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
-    else:
-        raise Exception(f"Free LLM Endpoint Response Error ({response.status_code}). Please switch to BYOK mode for commercial API reliability.")
+    try:
+        response = requests.post(url, json=payload, timeout=60)
+        if response.status_code == 200:
+            return response.text
+        else:
+            raise Exception(f"Free LLM Endpoint Busy ({response.status_code}). Please try again in a moment.")
+    except Exception as e:
+        raise Exception(f"Free LLM Connection Error: {str(e)}")
 
 # --- 4. 主畫面 UI 與一鍵模板選單 ---
 st.title(t["title"])
 
 uploaded_file = st.file_uploader(t["upload_label"], type=['pdf', 'xlsx', 'csv'])
 
-# 💡 UX 改善：一鍵選擇範例模板
+# 一鍵選擇預設模板
 st.write(t["preset_label"])
 preset_options = list(t["presets"].keys())
-selected_preset = st.selectbox("選擇預設範例", options=preset_options, index=0)
+selected_preset = st.selectbox("選擇預設範例 / Select Template", options=preset_options, index=0)
 
-# 取得預設文字
 default_template_text = t["presets"][selected_preset]
-
-# 文字框（自動帶入所選預設，但也允許用戶手動編輯）
 template = st.text_area(t["template_label"], value=default_template_text, height=150)
 
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     extracted_text = ""
-    # 只擷取前 30 頁關鍵內容，避免 context 爆掉或超時
+    # 擷取前 30 頁關鍵內容，防止過大超時
     max_pages = min(len(pdf_reader.pages), 30)
     for i in range(max_pages):
         text = pdf_reader.pages[i].extract_text()
@@ -185,7 +181,6 @@ if st.button(t["btn_generate"]):
 
         with st.spinner("AI Analysis in progress / AI 正在進行財略分析..."):
             try:
-                # 截取前 40,000 字精華，確保請求穩定不超時
                 user_prompt = f"""
                 【Analysis Requirements / 分析要求】:
                 {template}

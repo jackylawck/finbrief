@@ -4,6 +4,7 @@ from pypdf import PdfReader
 from openai import OpenAI
 import requests
 import urllib.parse
+import os
 
 # --- 1. UI 國際化語言包與預設模板 (i18n & Presets) ---
 TRANSLATIONS = {
@@ -38,7 +39,8 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ 請選擇或輸入分析模板！",
         "report_header": "📈 FinBrief 財略分析報告",
         "btn_download": "📥 下載報告 (Markdown 格式)",
-        "system_prompt": "你是一位精通香港會計準則 (HKFRS) 與國際財務報告準則 (IFRS) 的資深 C-Level 財務顧問與投資分析師。請用專業繁體中文輸出高品質財略報告。"
+        "system_prompt": "你是一位精通香港會計準則 (HKFRS) 與國際財務報告準則 (IFRS) 的資深 C-Level 財務顧問與投資分析師。請用專業繁體中文輸出高品質財略報告。",
+        "fallback_kb": "【預設領域知識】：請著重於公司的流動性風險、毛利率變化趨勢，以及營運現金流是否能覆蓋資本開支 (CAPEX)。"
     },
     "en": {
         "page_title": "FinBrief · Financial Digest",
@@ -71,7 +73,8 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ Please select or input an analysis template!",
         "report_header": "📈 FinBrief Strategic Financial Report",
         "btn_download": "📥 Download Report (Markdown)",
-        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS and IFRS. Please output a professional, high-level financial strategic report in English."
+        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS and IFRS. Please output a professional, high-level financial strategic report in English.",
+        "fallback_kb": "[Default Domain Knowledge]: Focus strictly on liquidity risks, gross margin trends, and whether operating cash flow adequately covers CAPEX."
     }
 }
 
@@ -112,12 +115,19 @@ with st.sidebar:
     st.markdown(f"### {t['security_title']}")
     st.caption(t["privacy_policy"])
 
-# --- 3. 免 Key LLM 呼叫函數 (帶智慧截斷與雙重備援) ---
+# --- 3. 讀取領域知識庫 (Knowledge Base) ---
+def load_knowledge_base(lang):
+    """讀取本地 Markdown 檔案作為 AI 的專業領域知識"""
+    file_path = f"knowledge_base/domain_knowledge_{lang}.md"
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            kb_content = f.read()
+            return f"\n\n【領域知識庫與指引 / Domain Knowledge Base】\n{kb_content}"
+    else:
+        return f"\n\n{t['fallback_kb']}"
+
+# --- 4. 免 Key LLM 呼叫函數 ---
 def call_free_open_llm(system_prompt, user_prompt):
-    """
-    帶有自動備援機制的免費 LLM 呼叫，避免長文字導致 402/413 錯誤
-    """
-    # 方案 A: Pollinations GET 方式 (控制在 8,000 字以內)
     try:
         truncated_prompt = user_prompt[:8000]
         prompt_text = f"System: {system_prompt}\nUser: {truncated_prompt}"
@@ -129,9 +139,8 @@ def call_free_open_llm(system_prompt, user_prompt):
         if response.status_code == 200 and len(response.text.strip()) > 0:
             return response.text
     except Exception:
-        pass # 若方案 A 失敗，自動無感切換至方案 B
+        pass 
 
-    # 方案 B: Pollinations POST 方式 (控制在 6,000 字以內)
     try:
         url_b = "https://text.pollinations.ai/"
         payload_b = {
@@ -148,15 +157,13 @@ def call_free_open_llm(system_prompt, user_prompt):
     except Exception:
         pass
 
-    # 若兩者均繁忙，彈性提示
     raise Exception("免費 LLM Endpoint 目前流量較高。建議稍後再試，或切換至「🔑 BYOK 模式」獲得商業級穩定體驗。")
 
-# --- 4. 主畫面 UI 與一鍵模板選單 ---
+# --- 5. 主畫面 UI 與一鍵模板選單 ---
 st.title(t["title"])
 
 uploaded_file = st.file_uploader(t["upload_label"], type=['pdf', 'xlsx', 'csv'])
 
-# 一鍵選擇預設模板
 st.write(t["preset_label"])
 preset_options = list(t["presets"].keys())
 selected_preset = st.selectbox("選擇預設範例 / Select Template", options=preset_options, index=0)
@@ -167,7 +174,6 @@ template = st.text_area(t["template_label"], value=default_template_text, height
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     extracted_text = ""
-    # 免 Key 模式下只精確擷取前 15 頁核心摘要與目錄，確保免費 Endpoint 穩定吞吐
     max_pages = min(len(pdf_reader.pages), 15)
     for i in range(max_pages):
         text = pdf_reader.pages[i].extract_text()
@@ -175,7 +181,7 @@ def extract_text_from_pdf(file):
             extracted_text += text + "\n"
     return extracted_text
 
-# --- 5. 報告生成邏輯 ---
+# --- 6. 報告生成邏輯 ---
 if st.button(t["btn_generate"]):
     if run_mode == t["mode_byok"] and not active_api_key:
         st.error(t["err_no_key"])
@@ -194,8 +200,12 @@ if st.button(t["btn_generate"]):
                 df = pd.read_excel(uploaded_file) if file_type == 'xlsx' else pd.read_csv(uploaded_file)
                 extracted_content = df.to_string()
 
-        with st.spinner("AI Analysis in progress / AI 正在進行財略分析..."):
+        with st.spinner("AI Analysis in progress / AI 正在進行財略分析 (結合知識庫)..."):
             try:
+                # 組合完整的 System Prompt (基礎人設 + 知識庫)
+                kb_text = load_knowledge_base(lang_code)
+                full_system_prompt = t["system_prompt"] + kb_text
+
                 user_prompt = f"""
                 【Analysis Requirements / 分析要求】:
                 {template}
@@ -205,7 +215,7 @@ if st.button(t["btn_generate"]):
                 """
 
                 if run_mode == t["mode_free"]:
-                    report_text = call_free_open_llm(t["system_prompt"], user_prompt)
+                    report_text = call_free_open_llm(full_system_prompt, user_prompt)
                 else:
                     client = OpenAI(
                         api_key=active_api_key,
@@ -214,8 +224,8 @@ if st.button(t["btn_generate"]):
                     response = client.chat.completions.create(
                         model=selected_model,
                         messages=[
-                            {"role": "system", "content": t["system_prompt"]},
-                            {"role": "user", "content": user_prompt[:40000]} # BYOK 模式可支援更大字數
+                            {"role": "system", "content": full_system_prompt},
+                            {"role": "user", "content": user_prompt[:40000]}
                         ],
                         temperature=0.2
                     )

@@ -1,4 +1,4 @@
-# HKFRS & IFRS Financial Strategic Framework (香港財務報告與戰略分析準則 v2.0)
+# HKFRS & IFRS Financial Strategic Framework (香港財務報告與戰略分析準則)
 
 ## 1. Balance Sheet Robustness (資產負債表健全度)
 - **Accounting Equation / 會計恆等式**: Assets = Liabilities + Shareholders' Equity (資產 = 負債 + 股東權益).

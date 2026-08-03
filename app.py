@@ -39,8 +39,7 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ 請選擇或輸入分析模板！",
         "report_header": "📈 FinBrief 財略分析報告",
         "btn_download": "📥 下載報告 (Markdown 格式)",
-        "system_prompt": "你是一位精通香港會計準則 (HKFRS) 與國際財務報告準則 (IFRS) 的資深 C-Level 財務顧問與投資分析師。請用專業繁體中文輸出高品質財略報告。",
-        "fallback_kb": "【預設領域知識】：請著重於公司的流動性風險、毛利率變化趨勢，以及營運現金流是否能覆蓋資本開支 (CAPEX)。"
+        "system_prompt": "你是一位精通香港會計準則 (HKFRS) 與國際財務報告準則 (IFRS) 的資深 C-Level 財務顧問與投資分析師。請參考提供的 HKFRS/IFRS 雙語權威知識庫，嚴格以專業繁體中文輸出高品質財略報告。"
     },
     "en": {
         "page_title": "FinBrief · Financial Digest",
@@ -73,8 +72,7 @@ TRANSLATIONS = {
         "err_no_template": "⚠️ Please select or input an analysis template!",
         "report_header": "📈 FinBrief Strategic Financial Report",
         "btn_download": "📥 Download Report (Markdown)",
-        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS and IFRS. Please output a professional, high-level financial strategic report in English.",
-        "fallback_kb": "[Default Domain Knowledge]: Focus strictly on liquidity risks, gross margin trends, and whether operating cash flow adequately covers CAPEX."
+        "system_prompt": "You are a senior C-Level financial advisor and investment analyst well-versed in HKFRS and IFRS. Please refer to the provided bilingual HKFRS/IFRS Knowledge Base and output a professional, high-level financial strategic report strictly in English."
     }
 }
 
@@ -115,19 +113,24 @@ with st.sidebar:
     st.markdown(f"### {t['security_title']}")
     st.caption(t["privacy_policy"])
 
-# --- 3. 讀取領域知識庫 (Knowledge Base) ---
-def load_knowledge_base(lang):
-    """讀取本地 Markdown 檔案作為 AI 的專業領域知識"""
-    file_path = f"knowledge_base/domain_knowledge_{lang}.md"
+# --- 3. 讀取單一中英雙語權威知識庫 (Knowledge Base) ---
+@st.cache_data
+def load_knowledge_base():
+    """讀取單一中英雙語 HKFRS/IFRS 權威知識庫"""
+    file_path = "knowledge_base/hkfrs_standards.md"
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             kb_content = f.read()
-            return f"\n\n【領域知識庫與指引 / Domain Knowledge Base】\n{kb_content}"
+            return f"\n\n【HKFRS/IFRS Bilingual Domain Knowledge / 雙語權威財務知識庫】\n{kb_content}"
     else:
-        return f"\n\n{t['fallback_kb']}"
+        return "\n\n【Default Knowledge】: Analyze under standard HKFRS/IFRS framework focusing on liquidity, gross margin shifts, and operating cash flow CAPEX coverage."
 
-# --- 4. 免 Key LLM 呼叫函數 ---
+# --- 4. 免 Key LLM 呼叫函數 (雙重自動備援) ---
 def call_free_open_llm(system_prompt, user_prompt):
+    """
+    帶有自動備援機制的免費 LLM 呼叫，避免長文字導致 402/413 錯誤
+    """
+    # 方案 A: Pollinations GET 方式 (截取前 8,000 字)
     try:
         truncated_prompt = user_prompt[:8000]
         prompt_text = f"System: {system_prompt}\nUser: {truncated_prompt}"
@@ -141,6 +144,7 @@ def call_free_open_llm(system_prompt, user_prompt):
     except Exception:
         pass 
 
+    # 方案 B: Pollinations POST 方式 (截取前 6,000 字)
     try:
         url_b = "https://text.pollinations.ai/"
         payload_b = {
@@ -157,7 +161,7 @@ def call_free_open_llm(system_prompt, user_prompt):
     except Exception:
         pass
 
-    raise Exception("免費 LLM Endpoint 目前流量較高。建議稍後再試，或切換至「🔑 BYOK 模式」獲得商業級穩定體驗。")
+    raise Exception("免費 LLM Endpoint 目前流量較高 (402/429)。建議稍後再試，或切換至「🔑 BYOK 模式」輸入 API Key 獲得商業級穩定體驗。")
 
 # --- 5. 主畫面 UI 與一鍵模板選單 ---
 st.title(t["title"])
@@ -174,6 +178,7 @@ template = st.text_area(t["template_label"], value=default_template_text, height
 def extract_text_from_pdf(file):
     pdf_reader = PdfReader(file)
     extracted_text = ""
+    # 免 Key 模式下只精確擷取前 15 頁核心摘要與目錄，確保免費 Endpoint 吞吐穩定
     max_pages = min(len(pdf_reader.pages), 15)
     for i in range(max_pages):
         text = pdf_reader.pages[i].extract_text()
@@ -200,10 +205,10 @@ if st.button(t["btn_generate"]):
                 df = pd.read_excel(uploaded_file) if file_type == 'xlsx' else pd.read_csv(uploaded_file)
                 extracted_content = df.to_string()
 
-        with st.spinner("AI Analysis in progress / AI 正在進行財略分析 (結合知識庫)..."):
+        with st.spinner("AI Analysis in progress / AI 正在結合 HKFRS 雙語知識庫進行分析..."):
             try:
-                # 組合完整的 System Prompt (基礎人設 + 知識庫)
-                kb_text = load_knowledge_base(lang_code)
+                # 載入單一中英雙語權威知識庫
+                kb_text = load_knowledge_base()
                 full_system_prompt = t["system_prompt"] + kb_text
 
                 user_prompt = f"""

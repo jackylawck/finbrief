@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Author & Credit Code-Level Annotation for SEO (羅子淇 Jacky Law) -->
+    <!-- Author: 羅子淇 Jacky Law | Personal Site: https://jackylawck.github.io/jackylawck/ -->
+    
+    <!-- Google Search Console 驗證標籤 -->
+    <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY" />
+    
+    <!-- 精準 SEO 設定 (Google 搜尋結果格式優化) -->
+    <title>FinBrief · 財略摘要器 | Enterprise Financial Digest & AI Risk Gatekeeper</title>
+    <meta name="description" content="FinBrief 是一款專為 C-Level 管理層與董事會設計的 AI 驅動財務戰略摘要與風險排雷工作站。對齊香港財務報告準則 (HKFRS)、IFRS 與 ISO 42001/27001。具備零數據留存 (Zero Data Retention) 與無狀態記憶體運算。C-Suite AI-powered financial strategic audit gatekeeper.">
+    <meta name="keywords" content="FinBrief, 財略摘要器, HKFRS, IFRS, CFO 戰略, AI Governance, AI管治, ISO 42001, ISO 27001, 董事會管治, Privacy-by-Design, Zero Data Retention, 羅子淇, Jacky Law">
+    <meta name="author" content="Jacky Law 羅子淇 (https://jackylawck.github.io/jackylawck/)">
+    <link rel="author" href="https://jackylawck.github.io/jackylawck/" />
+    <link rel="me" href="https://jackylawck.github.io/jackylawck/" />
+
+    <!-- Open Graph 社群與多語言標籤 -->
+    <meta property="og:title" content="FinBrief · 財略摘要器 | Enterprise Financial Digest & AI Risk Gatekeeper">
+    <meta property="og:description" content="專為 C-Level 管理層與董事會設計的 AI 財務戰略摘要工作站 — 結合 HKFRS/IFRS 會計準則、CFO 資本配置與 ISO 42001 AI 治理可追溯性軌跡。">
+    <meta property="og:url" content="https://jackylawck.github.io/finbrief/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_HK">
+    <meta property="og:locale:alternate" content="en_US">
+    <link rel="canonical" href="https://finbrief.streamlit.app/" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-sky-600 selection:text-white">
+
+    <!-- 導覽列 Navigation -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+                <span>📊 FinBrief · 財略摘要器</span>
+                <span class="text-xs text-sky-400 font-normal border border-sky-800/60 bg-sky-950/40 px-2 py-0.5 rounded">v3.0 ISO-Ready</span>
+            </div>
+            <div class="flex items-center space-x-6 text-sm font-medium text-slate-400">
+                <a href="#features" class="hover:text-sky-400 transition-colors">Features / 核心特色</a>
+                <a href="#security" class="hover:text-sky-400 transition-colors">Governance / 資安管治</a>
+                <a href="https://github.com/jackylawck/finbrief" target="_blank" class="hover:text-white transition-colors">GitHub Repo</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 區域 -->
+    <header class="py-20 px-6 max-w-6xl mx-auto text-center sm:text-left">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-xs font-semibold mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-sky-400 animate-pulse"></span>
+                Enterprise Strategic Financial Audit Engine | C-Level 財略與 AI 管治引擎
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                FinBrief · 財略摘要器<br>
+                <span class="text-sky-400 text-3xl sm:text-4xl">C-Suite & Board-Level 戰略防禦門神</span>
+            </h1>
+            
+            <div class="space-y-3 text-slate-300 leading-relaxed mb-8">
+                <p class="text-base sm:text-lg">
+                    專為 C-Suite 高管與董事會打造的 AI 財務戰略摘要系統 — 深度結合香港財務報告準則 (HKFRS)、CFO 資本配置框架與第三方 AI 部署管治 (M365 Copilot)，自動將年報與財報數據轉化為具備防禦深度的管理決策備忘錄。
+                </p>
+                <p class="text-sm sm:text-base text-slate-400 italic">
+                    Enterprise financial digest & strategic risk evaluation workstation aligned with HKFRS/IFRS and ISO 42001/27001 standards. Features modular domain knowledge, zero data retention, and automated AI audit trail.
+                </p>
+            </div>
+            
+            <!-- 行動按鈕 -->
+            <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
+                <a href="https://finbrief.streamlit.app" target="_blank" rel="noopener" class="px-8 py-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-lg shadow-sky-600/30 flex items-center gap-2">
+                    🚀 啟動 FinBrief Web App / Launch Strategic Engine
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+                <a href="https://github.com/jackylawck/finbrief" target="_blank" rel="noopener" class="px-6 py-4 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 font-medium transition-all">
+                    GitHub Source Code
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- GitHub Topics 標籤牆 -->
+    <section class="py-6 border-y border-slate-900 bg-slate-900/30">
+        <div class="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span class="text-xs text-slate-400 font-semibold mr-2">Topics & Framework Alignment:</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-950/60 text-sky-400 border border-sky-800/50">privacy-by-design</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-950/60 text-sky-400 border border-sky-800/50">zero-data-retention</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-950/60 text-sky-400 border border-sky-800/50">ai-governance</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-950/60 text-sky-400 border border-sky-800/50">iso-42001</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-950/60 text-sky-400 border border-sky-800/50">iso-27001</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">hkfrs-compliance</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">cfo-dashboard</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">board-governance</span>
+        </div>
+    </section>
+
+    <!-- 核心特色 Section -->
+    <section id="features" class="py-16 px-6 max-w-6xl mx-auto">
+        <h2 class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-8">Key Capabilities / 核心特色</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
+                <div class="text-3xl">🧠</div>
+                <h3 class="text-lg font-bold text-white">模組化 C-Suite 智囊知識庫<br><span class="text-xs text-sky-400 font-normal">Modular Domain Knowledge Engine</span></h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    自動融合 HKFRS 會計合規、CFO 資本配置 (ROE/ROIC)、CHRO 變革管理及 CRO/CISO 數據安全，全面覆蓋上市企業高層決策維度。<br>
+                    <span class="text-xs text-slate-500 block mt-1">Integrates HKFRS compliance, CFO capital allocation, and CISO cybersecurity risk frameworks for board-level perspective.</span>
+                </p>
+            </div>
+            <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
+                <div class="text-3xl">🔑</div>
+                <h3 class="text-lg font-bold text-white">免 Key 開箱即用 + BYOK 彈性<br><span class="text-xs text-sky-400 font-normal">Dual Model Execution Architecture</span></h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    預設採用開源 LLM 實現無門檻體驗；高階商業用戶可隨時切換至 BYOK 模式，直連 OpenAI GPT-4o、DeepSeek 或 Groq 商業級 Endpoint。<br>
+                    <span class="text-xs text-slate-500 block mt-1">Offers instant evaluation via public LLM proxies alongside Bring-Your-Own-Key (BYOK) mode for commercial confidentiality.</span>
+                </p>
+            </div>
+            <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
+                <div class="text-3xl">🛡️</div>
+                <h3 class="text-lg font-bold text-white">ISO 42001 自動化審計軌跡<br><span class="text-xs text-sky-400 font-normal">Automated AI Governance Audit Trail</span></h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    每份生成的財略報告末端均附帶可追溯的治理元數據（包含時間戳記、知識模組版本及運算模式），確保系統操作符合 AI 審計標準。<br>
+                    <span class="text-xs text-slate-500 block mt-1">Appends automated audit footprints capturing system prompts, knowledge modules, and model metadata for full compliance traceability.</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 資安與隱私合規 Section -->
+    <section id="security" class="py-16 px-6 max-w-6xl mx-auto border-t border-slate-900">
+        <div class="rounded-3xl border border-sky-900/40 bg-gradient-to-b from-sky-950/20 to-slate-900/40 p-8 sm:p-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span>🔒</span> ISO 27001 & ISO 42001 Privacy-by-Design 治理架構
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 text-sm text-slate-300">
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-sky-400 text-base">🔒 零數據留存 (Zero Data Retention / ZDR)</h4>
+                    <p class="leading-relaxed text-slate-400">
+                        採用純 Session-Only 無狀態記憶體架構 (Stateless In-Memory Architecture)。上傳之財務報表數據僅用於當次計算，伺服器硬碟不保存任何原始檔案。<br>
+                        <span class="text-xs text-slate-500 block mt-1">Files are processed strictly in RAM and never saved to server disks, meeting ISO 27001 data minimization requirements.</span>
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-sky-400 text-base">🔒 商業級金鑰隱蔽性 (BYOK Memory Protection)</h4>
+                    <p class="leading-relaxed text-slate-400">
+                        在 BYOK 模式下，使用者輸入之 API Key 僅存於當前視窗的 Session State 中。用戶關閉分頁或瀏覽器後，金鑰即刻於記憶體中銷毀。<br>
+                        <span class="text-xs text-slate-500 block mt-1">API keys in BYOK mode reside in session memory only and are immediately destroyed upon closing the browser tab.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code-level credit for SEO crawlers: Developed by Jacky Law 羅子淇 (https://jackylawck.github.io/jackylawck/) -->
+    <footer class="border-t border-slate-900 py-8 px-6 text-center text-xs text-slate-600">
+        <p>© 2026 FinBrief · Financial Digest. Released under Apache-2.0 License / HKFRS & ISO 42001 Aligned AI Governance Protocol.</p>
+    </footer>
+
+</body>
+</html>

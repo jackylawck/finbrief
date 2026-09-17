@@ -11,8 +11,8 @@ from datetime import datetime
 # --- 1. UI 國際化語言包與預設模板 (i18n & ISO Presets) ---
 TRANSLATIONS = {
     "zh": {
-        "page_title": "FinBrief · 財略摘要器",
-        "title": "📊 FinBrief · 財略摘要器",
+        "page_title": "FinBrief · 財報智析",
+        "title": "📊 FinBrief · 財報智析",
         "sidebar_settings": "⚙️ AI 模型與模式設定",
         "mode_select": "🌐 選擇運作模式",
         "mode_free": "🆓 免 Key 模式 (公開 LLM 驅動)",

@@ -1,4 +1,4 @@
-# 📊 FinBrief · 財略摘要器 (Financial Digest)
+# 📊 FinBrief · 財報智析
 
 [English](#english-version) | [繁體中文](#繁體中文版)
 
